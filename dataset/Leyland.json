@@ -1,0 +1,12 @@
+{
+	"name": "Leyland",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "leyland",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
