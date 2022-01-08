@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME \nFROM information_schema.TABLES \nWHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'Integration'",
+						"sqlReaderQuery": "SELECT TABLE_SCHEMA + '.' + TABLE_NAME AS TableName\nFROM information_schema.TABLES \nWHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'Integration'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -25,6 +25,54 @@
 						"referenceName": "Leyland",
 						"type": "DatasetReference"
 					}
+				}
+			},
+			{
+				"name": "ForEach_CreateTable",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetTableList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "CopyTables",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "SELECT * FROM @item().TABLE_NAME",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Leyland",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
 				}
 			}
 		],
