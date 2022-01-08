@@ -28,7 +28,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "CopyTablelist",
 				"type": "Copy",
 				"dependsOn": [
 					{
