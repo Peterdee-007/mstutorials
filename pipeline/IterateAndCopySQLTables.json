@@ -63,7 +63,7 @@
 								"enableStaging": true,
 								"stagingSettings": {
 									"linkedServiceName": {
-										"referenceName": "Blobstoragge",
+										"referenceName": "Staging",
 										"type": "LinkedServiceReference"
 									}
 								},
@@ -75,10 +75,10 @@
 									},
 									"logLocationSettings": {
 										"linkedServiceName": {
-											"referenceName": "Blobstoragge",
+											"referenceName": "BlobStorage",
 											"type": "LinkedServiceReference"
 										},
-										"path": ""
+										"path": "adflogs"
 									}
 								}
 							},
