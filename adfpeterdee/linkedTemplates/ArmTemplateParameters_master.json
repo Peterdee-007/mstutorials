@@ -17,6 +17,9 @@
 		"Blobstoragge_connectionString": {
 			"value": ""
 		},
+		"Staging_connectionString": {
+			"value": ""
+		},
 		"containerUri": {
 			"value": ""
 		},
