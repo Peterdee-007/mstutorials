@@ -1,10 +1,6 @@
 {
 	"name": "AzureSqlDWDataset",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "AzureSqlDWLinkedService",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"DWTableName": {
 				"type": "string"

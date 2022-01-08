@@ -50,13 +50,7 @@
 									"tableOption": "autoCreate",
 									"disableMetricsCollection": false
 								},
-								"enableStaging": true,
-								"stagingSettings": {
-									"linkedServiceName": {
-										"referenceName": "AzureStorageLinkedService",
-										"type": "LinkedServiceReference"
-									}
-								}
+								"enableStaging": true
 							},
 							"inputs": [
 								{
