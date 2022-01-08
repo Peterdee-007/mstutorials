@@ -181,11 +181,28 @@
 									"typeProperties": {
 										"source": {
 											"type": "SqlServerSource",
+											"additionalColumns": [
+												{
+													"name": "CreatedDate",
+													"value": {
+														"value": "@utcnow()",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "CreatedBy",
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													}
+												}
+											],
 											"sqlReaderQuery": {
 												"value": "SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
+											"isolationLevel": "ReadUncommitted",
 											"partitionOption": "None"
 										},
 										"sink": {
@@ -201,6 +218,20 @@
 											"linkedServiceName": {
 												"referenceName": "Blobstoragge",
 												"type": "LinkedServiceReference"
+											}
+										},
+										"logSettings": {
+											"enableCopyActivityLog": true,
+											"copyActivityLogSettings": {
+												"logLevel": "Info",
+												"enableReliableLogging": true
+											},
+											"logLocationSettings": {
+												"linkedServiceName": {
+													"referenceName": "Blobstoragge",
+													"type": "LinkedServiceReference"
+												},
+												"path": ""
 											}
 										}
 									},
