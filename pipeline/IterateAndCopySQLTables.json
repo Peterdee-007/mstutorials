@@ -27,7 +27,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "AzureSqlSource",
+									"type": "SqlServerSource",
 									"sqlReaderQuery": {
 										"value": "SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
 										"type": "Expression"
@@ -36,26 +36,41 @@
 									"partitionOption": "None"
 								},
 								"sink": {
-									"type": "SqlDWSink",
+									"type": "AzureSqlSink",
 									"preCopyScript": {
 										"value": "IF EXISTS (SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]) TRUNCATE TABLE [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
 										"type": "Expression"
 									},
-									"allowPolyBase": true,
-									"polyBaseSettings": {
-										"rejectValue": 0,
-										"rejectType": "value",
-										"useTypeDefault": false
-									},
-									"tableOption": "autoCreate",
 									"disableMetricsCollection": false
 								},
-								"enableStaging": true
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "Blobstoragge",
+										"type": "LinkedServiceReference"
+									}
+								}
 							},
 							"inputs": [
 								{
-									"referenceName": "AzureSqlDatabaseDataset",
+									"referenceName": "Leyland",
 									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlDatabaseDataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"DWTableName": {
+											"value": "@item().TABLE_NAME",
+											"type": "Expression"
+										},
+										"DWSchema": {
+											"value": "@item().TABLE_SCHEMA",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
