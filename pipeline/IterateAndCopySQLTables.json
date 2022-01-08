@@ -49,6 +49,20 @@
 										"referenceName": "Blobstoragge",
 										"type": "LinkedServiceReference"
 									}
+								},
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Info",
+										"enableReliableLogging": true
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "Blobstoragge",
+											"type": "LinkedServiceReference"
+										},
+										"path": ""
+									}
 								}
 							},
 							"inputs": [
