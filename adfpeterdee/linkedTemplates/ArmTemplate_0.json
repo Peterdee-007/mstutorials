@@ -175,6 +175,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/tablelist')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Frank"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlDB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Leyland')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -322,6 +343,106 @@
 				"[concat(variables('factoryId'), '/datasets/AzureSqlDatabaseDataset')]",
 				"[concat(variables('factoryId'), '/linkedServices/Staging')]",
 				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OutputTableNames')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetTableList",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME \nFROM information_schema.TABLES \nWHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'Integration'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "Leyland",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "CopyTablelist",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "GetTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME \nFROM information_schema.TABLES \nWHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'Integration'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Leyland",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "tablelist",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Leyland')]",
+				"[concat(variables('factoryId'), '/datasets/tablelist')]"
 			]
 		},
 		{
