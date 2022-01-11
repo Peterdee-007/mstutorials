@@ -1,0 +1,16 @@
+{
+	"name": "DestinationDataset_c4d",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Dimension",
+			"table": "City"
+		}
+	}
+}
