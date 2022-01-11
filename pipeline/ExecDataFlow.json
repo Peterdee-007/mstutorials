@@ -27,6 +27,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Lego/Copy"
+		},
 		"annotations": []
 	}
 }
