@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfpeterdee"
 		},
+		"ADLS_peterdee_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLS_peterdee'"
+		},
+		"ADSL_pd_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADSL_pd'"
+		},
 		"BlobStorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'BlobStorage'"
@@ -26,6 +34,18 @@
 		"leyland_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'leyland'"
+		},
+		"ADLS_peterdee_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://peterdee007.dfs.core.windows.net"
+		},
+		"ADSL_pd_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlspeterdee.dfs.core.windows.net"
+		},
+		"Lego_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://cdn.rebrickable.com/media/downloads/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -54,6 +74,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"ADLS_peterdee_accountKey": {
+						"value": "[parameters('ADLS_peterdee_accountKey')]"
+					},
+					"ADSL_pd_accountKey": {
+						"value": "[parameters('ADSL_pd_accountKey')]"
+					},
 					"Blobstoragge_connectionString": {
 						"value": "[parameters('Blobstoragge_connectionString')]"
 					},
@@ -68,10 +94,39 @@
 					},
 					"leyland_connectionString": {
 						"value": "[parameters('leyland_connectionString')]"
+					},
+					"ADLS_peterdee_properties_typeProperties_url": {
+						"value": "[parameters('ADLS_peterdee_properties_typeProperties_url')]"
+					},
+					"ADSL_pd_properties_typeProperties_url": {
+						"value": "[parameters('ADSL_pd_properties_typeProperties_url')]"
+					},
+					"Lego_properties_typeProperties_url": {
+						"value": "[parameters('Lego_properties_typeProperties_url')]"
 					}
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "adfpeterdee_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adfpeterdee_ArmTemplate_0')]"
+			]
 		}
 	]
 }

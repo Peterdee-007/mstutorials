@@ -5,6 +5,12 @@
 		"factoryName": {
 			"value": "adfpeterdee"
 		},
+		"ADLS_peterdee_accountKey": {
+			"value": ""
+		},
+		"ADSL_pd_accountKey": {
+			"value": ""
+		},
 		"BlobStorage_connectionString": {
 			"value": ""
 		},
@@ -19,6 +25,15 @@
 		},
 		"leyland_connectionString": {
 			"value": ""
+		},
+		"ADLS_peterdee_properties_typeProperties_url": {
+			"value": "https://peterdee007.dfs.core.windows.net"
+		},
+		"ADSL_pd_properties_typeProperties_url": {
+			"value": "https://adlspeterdee.dfs.core.windows.net"
+		},
+		"Lego_properties_typeProperties_url": {
+			"value": "https://cdn.rebrickable.com/media/downloads/"
 		},
 		"containerUri": {
 			"value": ""

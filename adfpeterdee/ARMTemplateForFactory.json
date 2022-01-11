@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfpeterdee"
 		},
+		"ADLS_peterdee_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADLS_peterdee'"
+		},
+		"ADSL_pd_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ADSL_pd'"
+		},
 		"BlobStorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'BlobStorage'"
@@ -26,6 +34,18 @@
 		"leyland_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'leyland'"
+		},
+		"ADLS_peterdee_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://peterdee007.dfs.core.windows.net"
+		},
+		"ADSL_pd_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adlspeterdee.dfs.core.windows.net"
+		},
+		"Lego_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://cdn.rebrickable.com/media/downloads/"
 		}
 	},
 	"variables": {
@@ -240,7 +260,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "SourceDataset_c4d",
+								"referenceName": "Leyland_City",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -261,7 +281,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_c4d')]",
+				"[concat(variables('factoryId'), '/datasets/Leyland_City')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_c4d')]",
 				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
 			]
@@ -293,7 +313,7 @@
 								"partitionOption": "None"
 							},
 							"dataset": {
-								"referenceName": "SourceDataset_c4d",
+								"referenceName": "Leyland_City",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -316,7 +336,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_c4d')]"
+				"[concat(variables('factoryId'), '/datasets/Leyland_City')]"
 			]
 		},
 		{
@@ -524,6 +544,99 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Lego_Copy_Themes_HTTP_ADLS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy_5c6",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "themes.csv.gz"
+							},
+							{
+								"name": "Destination",
+								"value": "lego//themes.parquet"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings",
+									"skipLineCount": 6
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Warning",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "ADSL_pd",
+										"type": "LinkedServiceReference"
+									},
+									"path": "lego/errors/themes"
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Lego_rebrickable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "adls_lego",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Lego_rebrickable')]",
+				"[concat(variables('factoryId'), '/datasets/adls_lego')]",
+				"[concat(variables('factoryId'), '/linkedServices/ADSL_pd')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OutputTableNames')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -677,6 +790,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/adls_lego')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ADSL_pd",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "themes.parquet",
+						"fileSystem": "lego"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ADSL_pd')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_c4d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -716,7 +854,50 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_c4d')]",
+			"name": "[concat(parameters('factoryName'), '/Lego_rebrickable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Lego",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "themes.csv.gz"
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"compressionCodec": "gzip",
+					"compressionLevel": "Optimal",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "18",
+						"type": "String"
+					},
+					{
+						"name": "Star Wars",
+						"type": "String"
+					},
+					{
+						"name": "1",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Lego')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Leyland_City')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -821,6 +1002,40 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ADLS_peterdee')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ADLS_peterdee_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ADLS_peterdee_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADSL_pd')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ADSL_pd_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ADSL_pd_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/BlobStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -848,6 +1063,21 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('Blobstoragge_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Lego')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('Lego_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
