@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_5c6",
+				"name": "Copy Themes from HTTP to ADLS",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -59,7 +59,8 @@
 							},
 							"path": "lego/errors/themes"
 						}
-					}
+					},
+					"dataIntegrationUnits": 2
 				},
 				"inputs": [
 					{
@@ -75,6 +76,9 @@
 				]
 			}
 		],
+		"folder": {
+			"name": "Lego/Copy"
+		},
 		"annotations": []
 	}
 }
