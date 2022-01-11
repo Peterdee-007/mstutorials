@@ -1,0 +1,20 @@
+{
+	"name": "DestinationDataset_5c6",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADSL_pd",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "themes.parquet",
+				"fileSystem": "lego"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
