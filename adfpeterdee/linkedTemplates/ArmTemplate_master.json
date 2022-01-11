@@ -11,21 +11,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'BlobStorage'"
 		},
-		"SqlDB_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlDB'"
-		},
-		"leyland_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'leyland'"
-		},
 		"Blobstoragge_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Blobstoragge'"
 		},
+		"SqlDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlDB'"
+		},
 		"Staging_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Staging'"
+		},
+		"leyland_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'leyland'"
 		},
 		"containerUri": {
 			"type": "string",
@@ -54,11 +54,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"SqlDB_connectionString": {
-						"value": "[parameters('SqlDB_connectionString')]"
-					},
 					"Blobstoragge_connectionString": {
 						"value": "[parameters('Blobstoragge_connectionString')]"
+					},
+					"SqlDB_connectionString": {
+						"value": "[parameters('SqlDB_connectionString')]"
 					},
 					"Staging_connectionString": {
 						"value": "[parameters('Staging_connectionString')]"

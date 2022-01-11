@@ -8,16 +8,16 @@
 		"BlobStorage_connectionString": {
 			"value": ""
 		},
-		"SqlDB_connectionString": {
-			"value": ""
-		},
-		"leyland_connectionString": {
-			"value": ""
-		},
 		"Blobstoragge_connectionString": {
 			"value": ""
 		},
+		"SqlDB_connectionString": {
+			"value": ""
+		},
 		"Staging_connectionString": {
+			"value": ""
+		},
+		"leyland_connectionString": {
 			"value": ""
 		},
 		"containerUri": {
