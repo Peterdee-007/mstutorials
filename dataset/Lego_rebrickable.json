@@ -17,20 +17,20 @@
 			"compressionCodec": "gzip",
 			"compressionLevel": "Optimal",
 			"escapeChar": "\\",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": false,
 			"quoteChar": "\""
 		},
 		"schema": [
 			{
-				"name": "18",
+				"name": "id",
 				"type": "String"
 			},
 			{
-				"name": "Star Wars",
+				"name": "name",
 				"type": "String"
 			},
 			{
-				"name": "1",
+				"name": "parent_id",
 				"type": "String"
 			}
 		]
