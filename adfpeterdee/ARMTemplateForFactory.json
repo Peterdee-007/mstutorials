@@ -53,6 +53,56 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ExecDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Lego_Themes",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"adlslego": {},
+									"AZSQLDB": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Lego/Copy"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Lego_Themes')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FirstIntegration_City')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -776,6 +826,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlDB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "lego",
+					"table": "themes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlDB')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_AzureDB_AllTables')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1242,60 +1313,44 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SqlDB",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "lego",
-					"table": "themes"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlDB')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ExecDataFlow')]",
+			"name": "[concat(parameters('factoryName'), '/Exec Pipelines')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
+						"name": "Lego HTTP to ADLS",
+						"type": "ExecutePipeline",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Lego_Themes",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"adlslego": {},
-									"AZSQLDB": {}
-								}
+							"pipeline": {
+								"referenceName": "Lego_Copy_Themes_HTTP_ADLS",
+								"type": "PipelineReference"
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Lego ADLS to ASQL",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Lego HTTP to ADLS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ExecDataFlow",
+								"type": "PipelineReference"
 							},
-							"traceLevel": "Fine"
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					}
 				],
@@ -1306,7 +1361,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Lego_Themes')]"
+				"[concat(variables('factoryId'), '/pipelines/Lego_Copy_Themes_HTTP_ADLS')]",
+				"[concat(variables('factoryId'), '/pipelines/ExecDataFlow')]"
 			]
 		}
 	]
